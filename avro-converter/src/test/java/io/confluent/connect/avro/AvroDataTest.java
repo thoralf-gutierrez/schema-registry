@@ -832,6 +832,8 @@ public class AvroDataTest {
         .requiredString("string")
         .endRecord();
     avroSchema.getField("int8").schema().addProp("connect.type", "int8");
+    // Add non-reserved prop and check that it is passed through
+    avroSchema.getField("int8").schema().addProp("foo", "bar");
     GenericRecord avroRecord = new GenericRecordBuilder(avroSchema)
         .set("int8", 12)
         .set("string", "sample string")
@@ -840,7 +842,7 @@ public class AvroDataTest {
     // conversion steps but keeps the test simple.
     Schema schema = SchemaBuilder.struct()
         .name("Record")
-        .field("int8", Schema.INT8_SCHEMA)
+        .field("int8", SchemaBuilder.int8().parameter("foo", "bar").build())
         .field("string", Schema.STRING_SCHEMA)
         .build();
     Struct struct = new Struct(schema).put("int8", (byte) 12).put("string", "sample string");

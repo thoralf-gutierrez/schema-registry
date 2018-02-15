@@ -247,6 +247,23 @@ public class AvroData {
   static final String CONNECT_AVRO_DECIMAL_PRECISION_PROP = "connect.decimal.precision";
   static final Integer CONNECT_AVRO_DECIMAL_PRECISION_DEFAULT = 64;
 
+  private static final String[] RESERVED_PROPS = {
+      CONNECT_NAME_PROP,
+      CONNECT_DOC_PROP,
+      CONNECT_RECORD_DOC_PROP,
+      CONNECT_ENUM_DOC_PROP,
+      CONNECT_VERSION_PROP,
+      CONNECT_DEFAULT_VALUE_PROP,
+      CONNECT_PARAMETERS_PROP,
+      CONNECT_TYPE_PROP,
+      AVRO_LOGICAL_TYPE_PROP,
+      AVRO_LOGICAL_DECIMAL_SCALE_PROP,
+      AVRO_LOGICAL_DECIMAL_PRECISION_PROP,
+      CONNECT_AVRO_DECIMAL_PRECISION_PROP
+  };
+  public static final HashSet<String> RESERVED_PROPS_SET
+      = new HashSet<>(Arrays.asList(RESERVED_PROPS));
+
   private static final HashMap<String, LogicalTypeConverter> TO_AVRO_LOGICAL_CONVERTERS
       = new HashMap<>();
 
@@ -1550,7 +1567,7 @@ public class AvroData {
     }
 
     for (Map.Entry<String, String> entry : schema.getProps().entrySet()) {
-      if (entry.getKey().startsWith(AVRO_PROP)) {
+      if (!RESERVED_PROPS_SET.contains(entry.getKey())) {
         builder.parameter(entry.getKey(), entry.getValue());
       }
     }
